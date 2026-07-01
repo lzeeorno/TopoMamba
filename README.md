@@ -221,4 +221,4 @@ Excluded from the public repo:
 
 ## Citation
 
-If you use this code, please cite the TopoMamba paper. The BibTeX entry will be added after the ACM MM 2026 camera-ready metadata is finalized.
+If you use this code, please cite the TopoMamba paper. The BibTeX entry will be added after is finalized.
