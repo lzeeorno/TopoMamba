@@ -2,6 +2,13 @@
 
 This public release does not include datasets. You must download the preprocessed Synapse data yourself and place it under `data/Synapse/`.
 
+The expected layout follows the common TransUNet / Swin-Unet Synapse preprocessing protocol. A processed Synapse/BTCV download link is provided by the Swin-Unet project:
+
+- Swin-Unet project: https://github.com/HuCaoFighting/Swin-Unet
+- Processed Synapse/BTCV data link from that README: https://drive.google.com/drive/folders/1ACJEoTp-uqfFJ73qS3eUObQh52nGuzCd
+
+Please follow the Synapse/BTCV dataset license and access requirements. This repository does not provide synthetic replacement data; training and evaluation require real Synapse files with the structure below.
+
 Prepare Synapse in the common Swin-Unet / nnFormer format:
 
 ```text

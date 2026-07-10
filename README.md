@@ -49,9 +49,36 @@ pip install -r requirements.txt
 
 If your PyTorch/CUDA stack is different, install the matching PyTorch build first, then install the remaining requirements.
 
+## Pretrained Weights
+
+This repository does **not** include pretrained weights or trained Synapse checkpoints. Create `pre_trained_weights/` locally and place the downloaded files there.
+
+TopoMamba-2D uses VMamba / VSSM ADE20K UperNet segmentation checkpoints as backbone initialization:
+
+- Upstream project: https://github.com/MzeroMiko/VMamba
+- Expected local files:
+  - `pre_trained_weights/upernet_vssm_4xb4-160k_ade20k-512x512_tiny_s_iter_160000.pth` for `TopoMamba_2D_t`
+  - `pre_trained_weights/upernet_vssm_4xb4-160k_ade20k-512x512_small_iter_144000.pth` for `TopoMamba_2D_s`
+  - `pre_trained_weights/upernet_vssm_4xb4-160k_ade20k-512x512_base_iter_160000.pth` for `TopoMamba_2D_b`
+
+TopoMamba-3D uses a SegMamba-compatible 3D Mamba checkpoint as encoder initialization:
+
+- Upstream project: https://github.com/ge-xing/SegMamba
+- Expected local file:
+  - `pre_trained_weights/tmp_model_ep799_0.8498.pt` for `TopoMamba_3D_t`
+
+If you use a different checkpoint filename, update `pretrained_path` in `configs/config_setting_synapse.py` or pass `--load_pretrained false` to train from scratch.
+
 ## Synapse Data Layout
 
 This repository does **not** ship Synapse data. Download the preprocessed Synapse files yourself and place them under `data/Synapse/` before training, testing, or running the included regression checks.
+
+The public scripts follow the common TransUNet / Swin-Unet Synapse preprocessing convention. The processed Synapse/BTCV files used by many 2D baselines are linked from the Swin-Unet project:
+
+- Swin-Unet project: https://github.com/HuCaoFighting/Swin-Unet
+- Processed Synapse/BTCV data link from that README: https://drive.google.com/drive/folders/1ACJEoTp-uqfFJ73qS3eUObQh52nGuzCd
+
+Please also follow the Synapse/BTCV dataset license and access requirements. If you prepare the dataset yourself, keep the same file names, list files, and array keys shown below.
 
 Prepare Synapse in the commonly used Swin-Unet / nnFormer style:
 
@@ -83,6 +110,22 @@ data/Synapse/topomamba3d_nnunetlite/
 ```
 
 This derived cache is generated automatically and is ignored by git.
+
+## nnU-Net v2 Inspired 3D Protocol
+
+The TopoMamba-3D Synapse pipeline is a lightweight, dataset-specific implementation inspired by nnU-Net v2 rather than a full nnU-Net fork. nnU-Net v2 provides a strong reference for self-configuring medical segmentation pipelines, including dataset analysis, preprocessing, patch planning, sliding-window inference, and post-processing.
+
+For this public Synapse release, we keep the original Synapse file protocol used by TransUNet / Swin-Unet and add the nnU-Net-style parts needed for stable 3D training:
+
+- case-level cache generation under `data/Synapse/topomamba3d_nnunetlite/`;
+- train/test split manifests that preserve `lists/lists_Synapse/test_vol.txt`;
+- shared 3D orientation, intensity clipping, normalization, and label handling for training and testing;
+- foreground-aware 3D crop sampling for training patches;
+- sliding-window inference with optional Gaussian blending;
+- validation-gated connected-component post-processing selected only from held-out validation cases;
+- a safety guard that keeps mirror TTA disabled for side-specific Synapse organs unless anatomy-aware class swapping is implemented.
+
+The main model difference is that the segmentation network is `models/TopoMamba_3D.py`, not the nnU-Net U-Net. The preprocessing and inference code lives in `tools/synapse3d_preprocess.py` and `tools/synapse3d_pipeline.py`.
 
 ## Train TopoMamba-2D on Synapse
 
@@ -205,4 +248,7 @@ test_results/<run_name>/
 └── organ_metrics.md
 ```
 
+## Acknowledgements
+
+TopoMamba builds on ideas and public resources from several excellent projects. We thank the authors and maintainers of VMamba for the VSSM backbone and ADE20K checkpoints, SegMamba for 3D Mamba medical segmentation references, nnU-Net / nnU-Net v2 for the self-configuring medical segmentation pipeline design, and the TransUNet / Swin-Unet communities for the widely used Synapse preprocessing protocol.
 
