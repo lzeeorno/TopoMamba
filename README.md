@@ -2,6 +2,22 @@
 
 Official implementation for **TopoMamba: Topology-Aware Scanning and Fusion for Medical Image Segmentation**.
 
+
+## Citation
+
+If you use this code, please cite the TopoMamba paper. 
+
+```bash
+@article{zheng2026topomamba,
+  title={TopoMamba: Topology-Aware Scanning and Fusion for Segmenting Heterogeneous Medical Visual Media},
+  author={Zheng, Fuchen and Xu, Chengpei and Ma, Long and Li, Weixuan and Zhou, Junhua and Chen, Xuhang and Liu, Weihuang and Li, Haolun and Li, Quanjun and Zhang, Zhenxi and others},
+  journal={arXiv preprint arXiv:2604.25545},
+  year={2026}
+}
+```
+
+
+
 This public release focuses on the Synapse multi-organ CT segmentation experiments for:
 
 - `models/TopoMamba_2D.py`
@@ -189,36 +205,4 @@ test_results/<run_name>/
 └── organ_metrics.md
 ```
 
-All result folders and checkpoint files are ignored by git.
 
-## Public Release Scope
-
-This repository is intended to contain only the Synapse training/testing code for TopoMamba-2D and TopoMamba-3D:
-
-```text
-configs/
-datasets/
-engine_synapse.py
-losses/
-models/TopoMamba_2D.py
-models/TopoMamba_3D.py
-scripts/run_synapse3d_protocol_ab_eval.sh
-test_synapse.py
-test_synapse3d.py
-tools/synapse3d_*.py
-train_synapse.py
-train_synapse3d.py
-utils.py
-```
-
-Excluded from the public repo:
-
-- datasets under `data/`
-- checkpoints and pretrained weights
-- `results/`, `test_results/`, logs, caches, and visualizations
-- zip files, PDFs, paper sources, rebuttal files, and private experiment notes
-- ablation-only scripts and unrelated dataset code
-
-## Citation
-
-If you use this code, please cite the TopoMamba paper. The BibTeX entry will be added after is finalized.
